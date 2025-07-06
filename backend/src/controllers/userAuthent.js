@@ -62,7 +62,15 @@ const login = async (req, res) => {
       { expiresIn: 60 * 60 }
     );
 
-    res.cookie("token", token, { maxAge: 60 * 60 * 1000 });
+    //s.cookie("token", token, { maxAge: 60 * 60 * 1000 }); for locally running this project
+
+  res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "None",
+  maxAge: 60 * 60 * 1000, // 1 hour
+});
+
 
     // ✅ Send token in response body as well
     res.status(200).json({
