@@ -9,37 +9,79 @@ const Submission = require("../models/submission")
 
 
 
-const register = async (req,res)=>{
+// const register = async (req,res)=>{
     
-    try{
-        // validate the data;
+//     try{
+//         // validate the data;
 
-      validate(req.body); 
-      const {firstName, emailId, password}  = req.body;
+//       validate(req.body); 
+//       const {firstName, emailId, password}  = req.body;
 
-      req.body.password = await bcrypt.hash(password, 10);
-      req.body.role = 'user'
-    //
+//       req.body.password = await bcrypt.hash(password, 10);
+//       req.body.role = 'user'
+//     //
     
-     const user =  await User.create(req.body);
-     const token =  jwt.sign({_id:user._id , emailId:emailId, role:'user'},process.env.JWT_KEY,{expiresIn: 60*60});
-     const reply = {
-        firstName: user.firstName,
-        emailId: user.emailId,
-        _id: user._id,
-        role:user.role,
-    }
+//      const user =  await User.create(req.body);
+//      const token =  jwt.sign({_id:user._id , emailId:emailId, role:'user'},process.env.JWT_KEY,{expiresIn: 60*60});
+//      const reply = {
+//         firstName: user.firstName,
+//         emailId: user.emailId,
+//         _id: user._id,
+//         role:user.role,
+//     }
     
-     res.cookie('token',token,{maxAge: 60*60*1000});
-     res.status(201).json({
-        user:reply,
-        message:"Loggin Successfully"
-    })
-    }
-    catch(err){
-        res.status(400).send("Error: "+err);
-    }
-}
+//      res.cookie('token',token,{maxAge: 60*60*1000});
+//      res.status(201).json({
+//         user:reply,
+//         message:"Loggin Successfully"
+//     })
+//     }
+//     catch(err){
+//         res.status(400).send("Error: "+err);
+//     }
+// }  modify for vercel and render 
+
+const register = async (req, res) => {
+  try {
+    validate(req.body);
+    const { firstName, emailId, password } = req.body;
+
+    req.body.password = await bcrypt.hash(password, 10);
+    req.body.role = 'user';
+
+    const user = await User.create(req.body);
+
+    const token = jwt.sign(
+      { _id: user._id, emailId: emailId, role: 'user' },
+      process.env.JWT_KEY,
+      { expiresIn: 60 * 60 }
+    );
+
+    const reply = {
+      firstName: user.firstName,
+      emailId: user.emailId,
+      _id: user._id,
+      role: user.role,
+    };
+
+    // ✅ Fix applied here:
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+      maxAge: 60 * 60 * 1000
+    });
+
+    res.status(201).json({
+      user: reply,
+      message: "Login Successfully"
+    });
+
+  } catch (err) {
+    res.status(400).send("Error: " + err);
+  }
+};
+
 
 const login = async (req, res) => {
   try {
