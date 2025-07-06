@@ -64,7 +64,7 @@ const register = async (req, res) => {
       role: user.role,
     };
 
-    // ✅ Fix applied here:
+    // ✅ Secure cookie settings
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
@@ -78,10 +78,12 @@ const register = async (req, res) => {
     });
 
   } catch (err) {
-    res.status(400).send("Error: " + err);
+    // ✅ Send error as JSON so frontend can read it properly
+    res.status(400).json({
+      message: err.message || "Something went wrong"
+    });
   }
 };
-
 
 const login = async (req, res) => {
   try {
