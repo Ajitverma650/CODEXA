@@ -11,28 +11,27 @@ const aiRouter = require("./src/routes/aiChatting");
 const videoRouter = require("./src/routes/videoCreator");
 const cors = require('cors');
 
-// ✅ Allow both localhost and Vercel frontend domain
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://codexa-lpkc.vercel.app',
-  'https://codexa-lpkc-5lksgjyzq-ajit-vermas-projects-7f732d05.vercel.app'
-];
-
+// ✅ Allow all localhost and *.vercel.app domains (preview + production)
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    const allowedLocalhost = origin && origin.startsWith('http://localhost');
+    const allowedVercel = origin && origin.endsWith('.vercel.app');
+
+    if (!origin || allowedLocalhost || allowedVercel) {
       callback(null, true);
     } else {
+      console.log('❌ Blocked by CORS:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   credentials: true
 }));
 
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 
-// Routers
+// Routes
 app.use('/user', authRouter);
 app.use('/problem', problemRouter);
 app.use('/submission', submitRouter);
@@ -43,14 +42,16 @@ app.use('/video', videoRouter);
 const InitalizeConnection = async () => {
   try {
     await Promise.all([main(), redisClient.connect()]);
-    console.log("DB Connected");
+    console.log("✅ DB Connected");
 
-    app.listen(process.env.PORT, () => {
-      console.log("Server listening at port number: " + process.env.PORT);
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server listening at port number: ${PORT}`);
     });
   } catch (err) {
-    console.log("Error: " + err);
+    console.log("❌ Error during server init:", err);
   }
 };
 
 InitalizeConnection();
+
