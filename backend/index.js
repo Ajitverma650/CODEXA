@@ -14,7 +14,8 @@ const cors = require('cors');
 // ✅ Allow both localhost and Vercel frontend domain
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://codexa-lpkc.vercel.app'
+  'https://codexa-lpkc.vercel.app',
+  'https://codexa-lpkc-5lksgjyzq-ajit-vermas-projects-7f732d05.vercel.app'
 ];
 
 app.use(cors({
