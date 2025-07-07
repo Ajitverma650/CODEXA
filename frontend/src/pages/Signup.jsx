@@ -10,8 +10,14 @@ import { registerUser } from '../authSlice';
 const signupSchema = z.object({
   firstName: z.string().min(3, "Minimum character should be 3"),
   emailId: z.string().email("Invalid Email"),
-  password: z.string().min(8, "Password is too weak")
+  password: z.string()
+    .min(8, "Password must be at least 8 characters long")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/,
+      "Password must include uppercase, lowercase, and special character"
+    ),
 });
+
 
 function Signup() {
   const [showPassword, setShowPassword] = useState(false);
