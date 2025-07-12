@@ -19,6 +19,7 @@ function App() {
   const { isAuthenticated, user, loading } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    console.log("✅ Runtime BACKEND_URL:", import.meta.env.VITE_BACKEND_URL);
     dispatch(checkAuth());
   }, [dispatch]);
 
