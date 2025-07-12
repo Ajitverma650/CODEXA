@@ -21,18 +21,25 @@ const allowedOrigins = [
   "https://codexa-git-fix-duplicate-k-e67b58-ajit-vermas-projects-7f732d05.vercel.app", // preview
   "https://codexa-sand.vercel.app" // ✅ main production frontend
 ];
-
+// cors update by ajit 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    const isLocalhost = origin && origin.startsWith("http://localhost");
+    const isVercel = origin && /\.vercel\.app$/.test(origin); // ✅ allow all vercel preview domains
+
+    if (!origin || isLocalhost || isVercel) {
+      console.log("🟢 CORS Allowed:", origin);
       callback(null, true);
     } else {
-      console.log('❌ CORS Blocked:', origin);
-      callback(new Error('Not allowed by CORS'));
+      console.log("❌ CORS Blocked:", origin);
+      callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 
 // ✅ Optional: Debug logs for incoming requests
 app.use((req, res, next) => {
