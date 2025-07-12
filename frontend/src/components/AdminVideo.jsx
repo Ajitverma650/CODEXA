@@ -26,7 +26,7 @@ const AdminVideo = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this problem?')) return;
+    if (!window.confirm('Are you sure you want to delete video of  this problem?')) return;
     
     try {
       await axiosClient.delete(`/video/delete/${id}`);

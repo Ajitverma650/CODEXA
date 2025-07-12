@@ -157,31 +157,104 @@ const ProblemPage = () => {
           {problem && (
             <>
               {activeLeftTab === 'description' && (
+  <div className="max-w-4xl mx-auto">
+    {/* Enhanced Header */}
+    <div className="flex flex-wrap items-center gap-3 mb-8 pb-4 border-b border-base-300">
+      <div className="flex items-center gap-3">
+        <div className="bg-primary text-primary-content p-2 rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <h1 className="text-3xl font-bold text-primary">{problem.title}</h1>
+      </div>
+      
+      <div className={`badge badge-lg ${getDifficultyColor(problem.difficulty)}`}>
+        {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
+      </div>
+      
+      <div className="flex flex-wrap gap-2">
+        {problem.tags.split(',').map((tag, index) => (
+          <div key={index} className="badge badge-outline badge-primary">
+            {tag.trim()}
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    {/* Problem Description */}
+    <div className="prose prose-lg max-w-none bg-base-100 p-6 rounded-xl shadow-sm mb-8">
+      <div className="whitespace-pre-wrap text-base leading-relaxed">
+        {problem.description}
+      </div>
+    </div>
+    
+    {/* Examples Section */}
+    <div className="mt-10">
+      <div className="flex items-center gap-2 mb-6">
+        <h3 className="text-xl font-bold">Examples</h3>
+        <div className="badge badge-ghost">{problem.visibleTestCases.length} examples</div>
+      </div>
+      
+      <div className="space-y-6">
+        {problem.visibleTestCases.map((example, index) => (
+          <div key={index} className="bg-base-200 p-5 rounded-xl border-l-4 border-primary shadow-sm">
+            <div className="font-mono text-sm">
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-info" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  <span className="font-semibold text-info">Input:</span>
+                </div>
+                <pre className="bg-base-300 p-3 rounded-lg overflow-x-auto text-base">{example.input}</pre>
+              </div>
+              
+              <div className="mb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="font-semibold text-success">Output:</span>
+                </div>
+                <pre className="bg-base-300 p-3 rounded-lg overflow-x-auto text-base">{example.output}</pre>
+              </div>
+              
+              {example.explanation && (
                 <div>
-                  <div className="flex items-center gap-4 mb-6">
-                    <h1 className="text-2xl font-bold">{problem.title}</h1>
-                    <div className={`badge badge-outline ${getDifficultyColor(problem.difficulty)}`}>
-                      {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
-                    </div>
-                    <div className="badge badge-primary">{problem.tags}</div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="font-semibold text-warning">Explanation:</span>
                   </div>
-                  <div className="prose max-w-none whitespace-pre-wrap text-sm leading-relaxed">
-                    {problem.description}
-                  </div>
-                  <div className="mt-8">
-                    <h3 className="text-lg font-semibold mb-4">Examples:</h3>
-                    {problem.visibleTestCases.map((example, index) => (
-                      <div key={index} className="bg-base-200 p-4 rounded-lg mb-4">
-                        <div className="font-mono text-sm">
-                          <p><strong>Input:</strong> {example.input}</p>
-                          <p><strong>Output:</strong> {example.output}</p>
-                          <p><strong>Explanation:</strong> {example.explanation}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <div className="bg-base-300 p-3 rounded-lg text-base">{example.explanation}</div>
                 </div>
               )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    {/* Constraints Section */}
+    {problem.constraints && (
+      <div className="mt-10 bg-warning bg-opacity-10 p-5 rounded-xl border border-warning border-opacity-30">
+        <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          Constraints
+        </h3>
+        <ul className="list-disc pl-5 space-y-2">
+          {problem.constraints.split('\n').map((constraint, i) => (
+            <li key={i} className="text-sm">{constraint}</li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+)}
 
               {activeLeftTab === 'editorial' && (
                 <Editorial secureUrl={problem.secureUrl} thumbnailUrl={problem.thumbnailUrl} duration={problem.duration} />
